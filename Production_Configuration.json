@@ -1,0 +1,28 @@
+{
+    "Water Pump": {
+        "level": 1,
+        "products": {
+            "Water": 5
+        },
+        "educts": {},
+        "speed": 50000,
+        "base_cost": 10,
+        "unlock_cost": 50,
+        "progress": 0,
+        "value": 5,
+        "unlocked": true
+    },
+    "Carbon Capturing Facility": {
+        "level": 1,
+        "products": {
+            "Carbon": 1
+        },
+        "educts": {},
+        "speed": 15000,
+        "base_cost": 100,
+        "unlock_cost": 50,
+        "progress": 0,
+        "value": 5,
+        "unlocked": false
+    }
+}
