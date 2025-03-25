@@ -10,7 +10,7 @@ def create_base(facility_id, frame, game):
     frame.place(x=200, y=200)
     frame.bind("<Button-1>", lambda e: game.click_start(e, frame, facility_id))
     frame.bind_all("<B1-Motion>", lambda e: game.move_mouse(e))
-    progress = ttk.Progressbar(frame, orient="horizontal", mode="determinate")
+    progress = ttk.Progressbar(frame, orient="horizontal", mode="determinate", style="custom.Horizontal.TProgressbar")
     progress.bind("<Button-1>", lambda e: game.click_start(e, frame, facility_id))
     Global_vars.factory_frames.append(frame)
     Global_vars.progress_bars[facility_id] = progress

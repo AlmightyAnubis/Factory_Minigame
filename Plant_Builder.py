@@ -5,12 +5,14 @@ import tkinter as tk
 import math
 import tkinter.simpledialog
 import tkinter.messagebox
+from stringprep import in_table_c11
 from tkinter import ttk
 import json
 import tkinter.font as tk_font
 
 import Facilitys
 import Global_vars
+from Global_vars import outputs_scales
 
 from Reaction_Shop import GeneralDialog
 
@@ -168,30 +170,46 @@ class FactoryGame:
             self.text_size *= 0.9
         if event.delta == 120 and self.text_size<30:
             self.text_size /= 0.9
-        print(self.text_size)
+        #print(self.text_size)
         Global_vars.factory_font.configure(size=int(self.text_size))
-        connection_lines = Global_vars.connections
+        Global_vars.bar_style.configure("custom.Horizontal.TProgressbar",thickness=int(self.text_size))
+        Global_vars.factory_style.configure("Factory.Bold.TLabel", font=Global_vars.factory_font)
+
 
         self.container.update()
-
-        for key1,value1 in connection_lines.items():
-            for key2,value2 in value1.items():
-                outframe = Global_vars.outputs[key1][key2][0]
-                inframe = Global_vars.inputs[value2[0]]
-
-                parent_frame = outframe.master
-                start_point = (outframe.winfo_x() + parent_frame.winfo_x(), outframe.winfo_y() + parent_frame.winfo_y())
-                parent_frame = inframe.master
-                end_point = (inframe.winfo_x() + parent_frame.winfo_x(), inframe.winfo_y() + parent_frame.winfo_y())
-
-                self.container.coords(self.current_line, start_point[0] + 0.5 * outframe.winfo_width(),
-                                      start_point[1] + 0.5 * outframe.winfo_height(),
-                                      end_point[0] + 0.5 * inframe.winfo_width(),
-                                      end_point[1] + 0.5 * inframe.winfo_height())
-
+        self.root.after(1, self.update_lines)
                 #self.current_line = self.container.create_line(self.start_point[0] + 0.5 * self.start_box.winfo_width(),
                 #                                       self.start_point[1] + 0.5 * self.start_box.winfo_height(),
                 #                                       line_end[0], line_end[1], width=5)
+
+
+    def update_lines(self):
+        connection_lines = Global_vars.connections
+        for key1, value1 in connection_lines.items():
+            for key2, value2 in value1.items():
+                out_frame = Global_vars.outputs[key1][key2][0]
+                in_frame = Global_vars.inputs[value2[0]]
+
+                start_point = self.get_frame_center(out_frame)
+                end_point = self.get_frame_center(in_frame)
+
+                self.container.coords(value2[1], start_point[0] + 0.5 * out_frame.winfo_width(),
+                                      start_point[1] + 0.5 * out_frame.winfo_height(),
+                                      end_point[0] + 0.5 * in_frame.winfo_width(),
+                                      end_point[1] + 0.5 * in_frame.winfo_height())
+
+
+    def get_frame_center(self, out_frame):
+        start_point = [out_frame.winfo_x(), out_frame.winfo_y()]
+        target_frame = out_frame
+        while True:
+            parent_frame = target_frame.master
+            if parent_frame == self.container:
+                break
+            start_point[0] += parent_frame.winfo_x()
+            start_point[1] += parent_frame.winfo_y()
+            target_frame = parent_frame
+        return start_point
 
     def buy_reaction(self):
         keys = list()
@@ -654,6 +672,14 @@ if __name__ == "__main__":
     Global_vars.style = ttk.Style()
     Global_vars.style.configure("Bold.TLabel", font=Global_vars.font)
     Global_vars.factory_font = tk_font.Font(size=10)
-    Global_vars.style.configure("Factory.Bold.TLabel", font=Global_vars.factory_font)
+    Global_vars.factory_style = ttk.Style()
+    Global_vars.factory_style.theme_create("factory_style",parent="default")
+    Global_vars.factory_style.theme_use("factory_style")
+    Global_vars.factory_style.configure("Factory.Bold.TLabel", font=Global_vars.factory_font)
+    Global_vars.bar_style = ttk.Style()
+    Global_vars.bar_style.theme_create("bar_style",parent="default")
+    Global_vars.bar_style.theme_use("bar_style")
+    Global_vars.bar_style.configure("Custom.Horizontal.TProgressbar")
     game = FactoryGame(root)
     root.mainloop()
+

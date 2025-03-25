@@ -4,7 +4,7 @@ This is a simple simulation game, that is highly configurable. Mainly for
 usage in chemistry and process engineering education.
 ![Game Image](Images/demo.png "Game Image")
 
-## Explanation of the Interface:
+## Explanation of the Interface
 
 The top cointains the author, the current balance as well as the time left.
 Depending on the mode, there are 2 timeframe: 10 minutes for a quick game
