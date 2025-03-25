@@ -73,7 +73,7 @@ class FactoryGame:
 
         self.root = root
         self.root.title("Chemical Factory Empire")
-        root.iconbitmap("Logo.ico")
+        root.iconbitmap("Images/logo.ico")
 
         root.bind_all("<B1-Motion>", lambda e: self.move_mouse(e))
         root.bind_all("<ButtonRelease-1>", lambda e: self.button_release(e))
