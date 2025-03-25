@@ -424,7 +424,7 @@ class FactoryGame:
         self.root.after(600, lambda: self.money_label.configure(fg="red"))
         self.root.after(900, lambda: self.money_label.configure(fg="black"))
 
-    speed_div = 100000
+    speed_div = 10000
     def update_progress(self, speed):
         return speed / self.speed_div
 
@@ -441,7 +441,7 @@ class FactoryGame:
             self.sell_products()
             self.save_highscore()
             return
-        self.update_time()
+        self.root.after(0, self.update_time)
         for facility_id, data in Global_vars.facilities.items():
             if not data:
                 continue
@@ -470,7 +470,7 @@ class FactoryGame:
                             data["progress"] = 0
                             data["progress"] += self.update_progress(data["speed"])
                 else:
-                    if data["progress"] >= 100:
+                    if data["progress"] >= 1000:
                         product = copy.deepcopy(data["products"])
                         requirements = data["educts"]
                         if "splitter" in product.keys():
@@ -567,9 +567,9 @@ class FactoryGame:
         if self.money >= upgrade_cost:
             self.money -= upgrade_cost
             Global_vars.facilities[branch]["level"] += 1
-            Global_vars.facilities[branch]["speed"] = max(100, Global_vars.facilities[branch]["speed"] * self.upgrade_speed_scaling)  # Faster production
+            Global_vars.facilities[branch]["speed"] = max(1000, Global_vars.facilities[branch]["speed"] * self.upgrade_speed_scaling)  # Faster production
             self.money_change_event()
-            if Global_vars.facilities[branch]["speed"] * self.upgrade_speed_scaling > 2*self.speed_div*1000/self.timestep:
+            if Global_vars.facilities[branch]["speed"] * self.upgrade_speed_scaling > 2*self.speed_div*10000/self.timestep:
                 self.production_label.config(text=self.get_production_text())
                 Global_vars.upgrade_buttons[branch].config(text=f"Upgrade (max)")
                 Global_vars.upgrade_buttons[branch].config(state=tk.DISABLED)

@@ -11,7 +11,7 @@ stop = False
 facilities: dict[int,dict] = {}
 facility_count = 0
 
-progress_bars : dict[str,ttk.Progressbar] = {}
+progress_bars : dict[int,ttk.Progressbar] = {}
 upgrade_buttons = {}
 power_buttons = {}
 storage_label = {}
