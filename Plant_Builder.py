@@ -203,6 +203,7 @@ class FactoryGame:
 
         reaction = GeneralDialog("Select plot type",
                       keys).center().show()
+
         if reaction == "":
             return
         reaction = reaction.split("\n")[0]
