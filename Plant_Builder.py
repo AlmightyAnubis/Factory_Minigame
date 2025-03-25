@@ -83,6 +83,7 @@ class FactoryGame:
         self.container: tk.Canvas
         self.container = tk.Canvas(root)
         self.container.bind('<MouseWheel>', self.zoom)
+        self.container.bind('<Button-1>', self.move_all_start)
 
         #container.grid_columnconfigure(list(range(reaction_grid_width)), weight=1)
         # Test for scrollable frame failed
@@ -177,7 +178,7 @@ class FactoryGame:
 
 
         self.container.update()
-        self.root.after(1, self.update_lines)
+        self.update_lines()
                 #self.current_line = self.container.create_line(self.start_point[0] + 0.5 * self.start_box.winfo_width(),
                 #                                       self.start_point[1] + 0.5 * self.start_box.winfo_height(),
                 #                                       line_end[0], line_end[1], width=5)
@@ -273,6 +274,11 @@ class FactoryGame:
     start_box: tk.Widget
     start_point: ()
 
+    def move_all_start(self,event: tk.Event):
+        self.widget_x = event.x
+        self.widget_y = event.y
+        self.started = "move_all"
+
     def click_start(self,event: tk.Event, frame: tk.Frame, facility_id: int):
         self.widget_x = event.x
         self.widget_y = event.y
@@ -353,19 +359,17 @@ class FactoryGame:
             delta = ((self.widget_x - event.x),(self.widget_y - event.y))
             new_pos = (self.target[0].winfo_x() - delta[0],self.target[0].winfo_y() - delta[1])
             self.target[0].place(x=new_pos[0], y=new_pos[1])
-            for out_id, in_id in Global_vars.connections.items():
-                if out_id== self.moving_facility:
-                    for sub_id in in_id.values():
-                        coords = self.container.coords(sub_id[1])
-                        coords[0] -= delta[0]
-                        coords[1] -= delta[1]
-                        self.container.coords(sub_id[1], coords)
-                for sub_id in in_id.values():
-                    if sub_id[0] == self.moving_facility:
-                        coords = self.container.coords(sub_id[1])
-                        coords[2] -= delta[0]
-                        coords[3] -= delta[1]
-                        self.container.coords(sub_id[1], coords)
+            self.update_lines()
+        if self.started == "move_all":
+            delta = ((self.widget_x - event.x), (self.widget_y - event.y))
+            for frame in Global_vars.factory_frames:
+                frame.place(x = frame.winfo_x() - delta[0],y = frame.winfo_y() - delta[1])
+
+            self.widget_x = event.x
+            self.widget_y = event.y
+
+            self.update_lines()
+
 
 
         if self.started == "line":
@@ -540,7 +544,7 @@ class FactoryGame:
 
     def toggle_branch(self, branch):
         Global_vars.start = True
-        if Global_vars.facilities[branch] is None:
+        if not Global_vars.facilities[branch]:
             return
         if not Global_vars.facilities[branch]["unlocked"]:
             return

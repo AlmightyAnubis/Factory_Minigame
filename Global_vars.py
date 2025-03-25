@@ -27,7 +27,7 @@ production_state = {}
 
 unlocked = {}
 
-factory_frames =[]
+factory_frames: list[ttk.Frame] =[]
 style: ttk.Style
 factory_style: ttk.Style
 bar_style: ttk.Style
