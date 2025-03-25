@@ -90,7 +90,7 @@ class ReactionConfigManager(tkinter.Tk):
             for educt, amount in educts.items():
                 label = tkinter.Label(self.container, text=educt, font=('Arial', 10))
                 label.grid(column=0, row=i, sticky=tkinter.NSEW)
-                self.string_vars["e:" + educt] = tkinter.StringVar(value=amount)
+                self.string_vars["e:" + educt] = tkinter.DoubleVar(value=amount)
                 entry = tkinter.Entry(self.container, textvariable=self.string_vars["e:" + educt], font=('Arial', 10))
                 self.string_vars["e:" + educt].trace_add("write",
                                                            lambda name, index, mode, e=educt: self.update_educt(e))
@@ -111,7 +111,7 @@ class ReactionConfigManager(tkinter.Tk):
         for product, amount in products.items():
             label = tkinter.Label(self.container, text=product, font=('Arial', 10))
             label.grid(column=0, row=i, sticky=tkinter.NSEW)
-            self.string_vars["p:" + product] = tkinter.StringVar(value=amount)
+            self.string_vars["p:" + product] = tkinter.DoubleVar(value=amount)
             entry = tkinter.Entry(self.container, textvariable=self.string_vars["p:" + product], font=('Arial', 10))
             self.string_vars["p:" + product].trace_add("write", lambda name,index,mode, p = product: self.update_product(p))
             entry.grid(column=1, row=i, sticky=tkinter.NSEW)

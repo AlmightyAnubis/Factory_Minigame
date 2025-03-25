@@ -2,11 +2,11 @@
     "Electrolysis Plant": {
         "level": 1,
         "products": {
-            "Hydrogen": "2",
-            "Oxygen": "1"
+            "Hydrogen": 2,
+            "Oxygen": 1
         },
         "educts": {
-            "Water": "3"
+            "Water": 3
         },
         "speed": 20000,
         "base_cost": 20,

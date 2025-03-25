@@ -203,7 +203,7 @@ def create_splitter(game:Plant_Builder.FactoryGame):
         label.bind("<Button-1>", lambda e: game.click_start(e, frame, facility_id))
         label.grid(column=1, row=3, columnspan=2, sticky=tk.NSEW, padx=2, pady=2)
 
-        Global_vars.facilities[facility_id] = {"unlocked":True,"educts":{"splitter":0},"products":{"splitter":0},"progress":0,"speed":20 * game.speed_div}
+        Global_vars.facilities[facility_id] = {"unlocked":True,"educts":{"splitter":0},"products":{"splitter":0},"progress":0,"speed":5 * game.speed_div}
         Global_vars.power_buttons[facility_id] = pwr_btn
         Global_vars.storage_label[facility_id] = label
         Global_vars.in_production[facility_id] = 0
@@ -280,7 +280,7 @@ def create_distillery(game:Plant_Builder.FactoryGame):
         label.bind("<Button-1>", lambda e: game.click_start(e, frame, facility_id))
         label.grid(column=1, row=3, columnspan=2, sticky=tk.NSEW, padx=2, pady=2)
 
-        Global_vars.facilities[facility_id] = {"unlocked":True,"educts":{"distillery":0},"products":{"distillery":0},"progress":0,"speed":100 * game.speed_div}
+        Global_vars.facilities[facility_id] = {"unlocked":True,"educts":{"distillery":0},"products":{"distillery":0},"progress":0,"speed":2 * game.speed_div}
         Global_vars.power_buttons[facility_id] = pwr_btn
         Global_vars.storage_label[facility_id] = label
         Global_vars.in_production[facility_id] = 0

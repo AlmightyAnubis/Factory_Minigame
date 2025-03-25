@@ -300,8 +300,7 @@ class FactoryGame:
 
         if type(widget) is not tk.Frame:
             self.container.delete(self.current_line)
-            if output_id[0] in Global_vars.connections:
-                self.container.delete(self.current_line)
+            if output_id[1] in Global_vars.connections[output_id[0]].keys():
                 self.container.delete(Global_vars.connections[output_id[0]].pop(output_id[1])[1])
             return
 
@@ -310,8 +309,8 @@ class FactoryGame:
         if len(input_id) > 1:
             raise LookupError("Multiple widgets are equal")
         if len(input_id) == 0:
-            if output_id[0] in Global_vars.connections.keys():
-                self.container.delete(self.current_line)
+            self.container.delete(self.current_line)
+            if output_id[1] in Global_vars.connections[output_id[0]].keys():
                 self.container.delete(Global_vars.connections[output_id[0]].pop(output_id[1])[1])
             return
 
