@@ -94,11 +94,12 @@ class PathDialog(tkinter.Tk):
         super().__init__()
         self.title("Reaction Path Calculator")
         self.game = game
+        print(path)
 
         # path -> result = (species, reaction_dict)
         self.container = tkinter.Canvas(self)
         self.container.grid(row=0, column=0, sticky=tkinter.NSEW)
-        row = self.generate_reaction_labels(path, 0, 100)
+        row = self.generate_reaction_labels(path, 100, 100)
 
         btn = tkinter.Button(self, text="Close", font=('Arial', 15), command=lambda: self.on_ok())
         btn.grid(column=1000, row=row, padx=5, pady=5, sticky=tkinter.NSEW)
@@ -113,17 +114,31 @@ class PathDialog(tkinter.Tk):
 
             span_0 = 1
             sub_row = 0
+            empty_label = None
             for reaction in reactions:
-                span = self.generate_reaction_labels(reaction, row + sub_row, parent_column - 1)
-                sub_row += span
-                span_0 += span
+                span = self.generate_reaction_labels(reaction, row + sub_row, parent_column - 2)
+                if reaction[0] not in color_map:
+                    color_map[reaction[0]] = "#{0:06X}".format(
+                        random.randrange(128) + 128 + 256 * (
+                                random.randrange(128) + 128 + 256 * (random.randrange(128) + 128)))
+
+                label = tkinter.Label(self.container, text="---" + self.game.chem_map[reaction[0]] + "-->", font=('Arial', 10), background=color_map[reaction[0]], relief="raised")
+                label.grid(column=parent_column - 2, row=row + sub_row, rowspan=span, sticky=tkinter.NSEW)
+                empty_label = tkinter.Label(self.container)
+                empty_label.grid(column=parent_column-2, row=row + sub_row + span, sticky=tkinter.NSEW)
+
+                sub_row += span + 1
+                span_0 += span + 1
+            if empty_label is not None:
+                empty_label.grid_forget()
 
             label = tkinter.Label(self.container, text=get_reaction_str(key, self.game, span_0), font=('Arial', 10),
                                   background=color_map[key], relief="raised")
-            label.grid(column=parent_column - 1, row=row, rowspan=span_0, sticky=tkinter.NSEW)
-            row -= - span_0
 
-        return row
+            label.grid(column=parent_column - 1, row=row, rowspan=span_0, sticky=tkinter.NSEW)
+            row += span_0
+
+        return row - parent_row
 
     def center(self):
         self.update()
