@@ -10,21 +10,23 @@ def create_base(facility_id, frame, game):
     frame.place(x=200, y=200)
     frame.bind("<Button-1>", lambda e: game.click_start(e, frame, facility_id))
     frame.bind_all("<B1-Motion>", lambda e: game.move_mouse(e))
-    progress = ttk.Progressbar(frame, orient="horizontal", mode="determinate", style="custom.Horizontal.TProgressbar",maximum=1000)
+    progress = ttk.Progressbar(frame, orient="horizontal", mode="determinate", style="custom.Horizontal.TProgressbar",
+                               maximum=1000)
     progress.bind("<Button-1>", lambda e: game.click_start(e, frame, facility_id))
     Global_vars.factory_frames.append(frame)
     Global_vars.progress_bars[facility_id] = progress
     Global_vars.connections[facility_id] = {}
     return progress
 
-def create_reactor(game:Plant_Builder.FactoryGame):
+
+def create_reactor(game: Plant_Builder.FactoryGame):
     if game.money >= 50:
         game.money -= 50
         game.money_change_event()
         facility_id = Global_vars.facility_count
         frame = ttk.Frame(game.container, padding=2, borderwidth=2, relief="ridge")
         # frame.place(x=counter//reaction_grid_width * 40, y=counter% reaction_grid_width * 40)
-        progress = create_base(facility_id, frame,game)
+        progress = create_base(facility_id, frame, game)
         frame.grid_rowconfigure(0, weight=1)
         frame.grid_columnconfigure([0, 1], weight=1)
 
@@ -39,20 +41,17 @@ def create_reactor(game:Plant_Builder.FactoryGame):
                              name="out_" + str(facility_id))
         out_frame.grid(column=3, row=0, rowspan=4, sticky=tk.NS, padx=2, pady=2)
         out_frame.bind("<Button-1>", lambda e: game.line_start(e, [frame]))
-        Global_vars.outputs[facility_id] = {0:(out_frame,1, None)}
-
-
+        Global_vars.outputs[facility_id] = {0: (out_frame, 1, None)}
 
         n = tk.StringVar()
         dropdown = ttk.Combobox(frame, textvariable=n, state="readonly", width=50, font=Global_vars.factory_font)
         dropdown["values"] = reactions
-        dropdown.bind("<<ComboboxSelected>>", lambda e, el_id=facility_id: update_reaction(game,e, el_id))
+        dropdown.bind("<<ComboboxSelected>>", lambda e, el_id=facility_id: update_reaction(game, e, el_id))
         dropdown.grid(column=1, row=0, columnspan=2, sticky=tk.NSEW, padx=2, pady=2)
 
         progress.grid(column=1, row=1, columnspan=2, sticky=tk.NSEW, padx=2, pady=2)
 
         # How to store upgrade when changing reaction?
-
 
         btn = tk.Button(frame, text=f"-",
                         command=lambda b=facility_id: game.upgrade_branch(b), font=Global_vars.factory_font)
@@ -60,7 +59,8 @@ def create_reactor(game:Plant_Builder.FactoryGame):
         #    btn.configure(fg="red")
         btn.grid(column=1, row=2, sticky=tk.NSEW)
 
-        pwr_btn = tk.Button(frame, text=f"Off", command=lambda: game.toggle_branch(facility_id), font=Global_vars.factory_font)
+        pwr_btn = tk.Button(frame, text=f"Off", command=lambda: game.toggle_branch(facility_id),
+                            font=Global_vars.factory_font)
         pwr_btn.grid(column=2, row=2, sticky=tk.NSEW)
 
         label = ttk.Label(frame, text="", style="Bold.TLabel")
@@ -80,7 +80,8 @@ def create_reactor(game:Plant_Builder.FactoryGame):
     else:
         game.purchase_fail_event()
 
-def update_reaction(game,event: tk.Event , facility_id):
+
+def update_reaction(game, event: tk.Event, facility_id):
     Global_vars.start = True
     wg: ttk.Combobox
     wg = event.widget
@@ -92,11 +93,14 @@ def update_reaction(game,event: tk.Event , facility_id):
     Global_vars.facilities[facility_id] = data
     Global_vars.in_production[facility_id] = 0
 
-    Global_vars.upgrade_buttons[facility_id].config(text=f"Upgrade (${data["base_cost"]  * game.upgrade_cost_scaling:.0f})",state=tk.NORMAL)
+    Global_vars.upgrade_buttons[facility_id].config(
+        text=f"Upgrade (${data["base_cost"] * game.upgrade_cost_scaling:.0f})", state=tk.NORMAL)
+
 
 max_outputs = 10
 
-def update_outputs(game,event: tk.Event , facility_id):
+
+def update_outputs(game, event: tk.Event, facility_id):
     Global_vars.start = True
     wg: ttk.Combobox
     wg = event.widget
@@ -119,7 +123,7 @@ def update_outputs(game,event: tk.Event , facility_id):
     update_splitter_labels(facility_id)
 
 
-def update_fractions(game,event: tk.Event , facility_id):
+def update_fractions(game, event: tk.Event, facility_id):
     Global_vars.start = True
     wg: ttk.Combobox
     wg = event.widget
@@ -137,7 +141,8 @@ def update_fractions(game,event: tk.Event , facility_id):
             out_frame.grid_forget()
             scale.grid_forget()
 
-def scroll_update_value(event:tk.Event,facility_id, nr):
+
+def scroll_update_value(event: tk.Event, facility_id, nr):
     widget: tk.Scale
     widget = event.widget
     delta = 0
@@ -154,10 +159,11 @@ def scroll_update_value(event:tk.Event,facility_id, nr):
     update_value(value, facility_id, nr)
 
 
-def update_value(value,facility_id, nr):
+def update_value(value, facility_id, nr):
     current = Global_vars.outputs[facility_id][nr]
-    Global_vars.outputs[facility_id][nr] = (current[0],float(value), current[2])
+    Global_vars.outputs[facility_id][nr] = (current[0], float(value), current[2])
     update_splitter_labels(facility_id)
+
 
 def update_splitter_labels(facility_id):
     total_out = 0
@@ -169,31 +175,32 @@ def update_splitter_labels(facility_id):
             value[2].configure(text="0%")
     else:
         for key, value in Global_vars.outputs[facility_id].items():
-            value[2].configure(text=str(round( 100 * value[1]/total_out)) + "%" )
+            value[2].configure(text=str(round(100 * value[1] / total_out)) + "%")
 
 
-def update_chem(event: tk.Event,facility_id, nr):
+def update_chem(event: tk.Event, facility_id, nr):
     scale: tk.Scale
     scale = event.widget
     current = Global_vars.outputs[facility_id][nr]
-    Global_vars.outputs[facility_id][nr] = (current[0],scale.get(), current[2])
+    Global_vars.outputs[facility_id][nr] = (current[0], scale.get(), current[2])
+
 
 def callback(value):
     print(f"Slider: {value}")
 
-def create_splitter(game:Plant_Builder.FactoryGame):
+
+def create_splitter(game: Plant_Builder.FactoryGame):
     if game.money >= 5:
         game.money -= 5
         game.money_change_event()
         facility_id = Global_vars.facility_count
         frame = ttk.Frame(game.container, padding=2, borderwidth=2, relief="ridge")
         # frame.place(x=counter//reaction_grid_width * 40, y=counter% reaction_grid_width * 40)
-        progress = create_base(facility_id, frame,game)
+        progress = create_base(facility_id, frame, game)
         frame.grid_columnconfigure([0, 1], weight=1)
         frame.grid_rowconfigure([3], weight=1)
 
-
-        reactions = list(range(1,max_outputs+1))
+        reactions = list(range(1, max_outputs + 1))
 
         in_frame = tk.Frame(frame, background="lightblue", borderwidth=2, relief="ridge", width=20,
                             name="in_" + str(facility_id))
@@ -209,10 +216,11 @@ def create_splitter(game:Plant_Builder.FactoryGame):
         Global_vars.outputs_scales[facility_id] = {}
         Global_vars.outputs[facility_id] = {}
         for i in range(max_outputs):
-            scale = tk.Scale(out_container,from_=0,to=20,orient=tk.HORIZONTAL,font=Global_vars.factory_font, showvalue=False)
-            scale.configure(command= lambda value, fac= facility_id, nr = i: update_value(value,fac,nr))
+            scale = tk.Scale(out_container, from_=0, to=20, orient=tk.HORIZONTAL, font=Global_vars.factory_font,
+                             showvalue=False)
+            scale.configure(command=lambda value, fac=facility_id, nr=i: update_value(value, fac, nr))
             scale.configure(sliderlength=20)
-            scale.bind("<MouseWheel>", lambda event, fac= facility_id, nr = i: scroll_update_value(event,fac,nr))
+            scale.bind("<MouseWheel>", lambda event, fac=facility_id, nr=i: scroll_update_value(event, fac, nr))
             scale.grid(column=0, row=i, sticky=tk.NS, padx=2, pady=2)
 
             label = ttk.Label(out_container, background=back_color)
@@ -222,13 +230,13 @@ def create_splitter(game:Plant_Builder.FactoryGame):
                                  name="out_" + str(facility_id) + str(i))
             out_frame.grid(column=2, row=i, sticky=tk.NS, padx=2, pady=2)
             out_frame.bind("<Button-1>", lambda e: game.line_start(e, [frame, out_container]))
-            Global_vars.outputs_scales[facility_id][i] =scale
-            if i<2:
+            Global_vars.outputs_scales[facility_id][i] = scale
+            if i < 2:
                 scale.set(1)
-                Global_vars.outputs[facility_id][i] = (out_frame,1, label)
+                Global_vars.outputs[facility_id][i] = (out_frame, 1, label)
             else:
                 scale.set(0)
-                Global_vars.outputs[facility_id][i] = (out_frame,0, label)
+                Global_vars.outputs[facility_id][i] = (out_frame, 0, label)
                 out_frame.grid_forget()
                 scale.grid_forget()
                 label.grid_forget()
@@ -239,19 +247,21 @@ def create_splitter(game:Plant_Builder.FactoryGame):
         dropdown = ttk.Combobox(frame, textvariable=n, state="readonly", width=1, font=Global_vars.factory_font)
         dropdown["values"] = reactions
         dropdown.current(1)
-        dropdown.bind("<<ComboboxSelected>>", lambda e, el_id=facility_id: update_outputs(game,e, el_id))
+        dropdown.bind("<<ComboboxSelected>>", lambda e, el_id=facility_id: update_outputs(game, e, el_id))
         dropdown.grid(column=1, row=0, sticky=tk.EW, padx=2, pady=2)
 
         progress.grid(column=1, row=1, sticky=tk.NSEW, padx=2, pady=2)
 
-        pwr_btn = tk.Button(frame, text=f"Off", command=lambda: game.toggle_branch(facility_id), font=Global_vars.factory_font)
+        pwr_btn = tk.Button(frame, text=f"Off", command=lambda: game.toggle_branch(facility_id),
+                            font=Global_vars.factory_font)
         pwr_btn.grid(column=1, row=2, sticky=tk.NSEW)
 
         label = ttk.Label(frame, text="", style="Bold.TLabel")
         label.bind("<Button-1>", lambda e: game.click_start(e, frame, facility_id))
         label.grid(column=1, row=3, columnspan=2, sticky=tk.NSEW, padx=2, pady=2)
 
-        Global_vars.facilities[facility_id] = {"unlocked":True,"educts":{"splitter":0},"products":{"splitter":0},"progress":0,"speed":50 * game.speed_div}
+        Global_vars.facilities[facility_id] = {"unlocked": True, "educts": {"splitter": 0}, "products": {"splitter": 0},
+                                               "progress": 0, "speed": 50 * game.speed_div}
         Global_vars.power_buttons[facility_id] = pwr_btn
         Global_vars.storage_label[facility_id] = label
         Global_vars.in_production[facility_id] = 0
@@ -263,19 +273,19 @@ def create_splitter(game:Plant_Builder.FactoryGame):
         game.purchase_fail_event()
 
 
-def create_distillery(game:Plant_Builder.FactoryGame):
+def create_distillery(game: Plant_Builder.FactoryGame):
     if game.money >= 500:
         game.money -= 500
         game.money_change_event()
         facility_id = Global_vars.facility_count
         frame = ttk.Frame(game.container, padding=2, borderwidth=2, relief="ridge")
         # frame.place(x=counter//reaction_grid_width * 40, y=counter% reaction_grid_width * 40)
-        progress = create_base(facility_id, frame,game)
+        progress = create_base(facility_id, frame, game)
         frame.grid_columnconfigure([0, 1], weight=1)
         frame.grid_columnconfigure([0, 1], weight=1)
         frame.grid_rowconfigure([3], weight=1)
 
-        reactions = list(range(1,max_outputs+1))
+        reactions = list(range(1, max_outputs + 1))
 
         in_frame = tk.Frame(frame, background="lightblue", borderwidth=2, relief="ridge", width=20,
                             name="in_" + str(facility_id))
@@ -290,7 +300,8 @@ def create_distillery(game:Plant_Builder.FactoryGame):
         Global_vars.outputs[facility_id] = {}
         for i in range(max_outputs):
             n = tk.StringVar()
-            scale = ttk.Combobox(out_container, textvariable=n, state="readonly", width=10, font=Global_vars.factory_font)
+            scale = ttk.Combobox(out_container, textvariable=n, state="readonly", width=10,
+                                 font=Global_vars.factory_font)
             scale.bind("<<ComboboxSelected>>", lambda e, fac=facility_id, nr=i: update_chem(e, fac, nr))
 
             chems = list()
@@ -303,12 +314,12 @@ def create_distillery(game:Plant_Builder.FactoryGame):
             out_frame.grid(column=1, row=i, sticky=tk.NS, padx=2, pady=2)
             out_frame.bind("<Button-1>", lambda e: game.line_start(e, [frame, out_container]))
             Global_vars.outputs_chem[facility_id][i] = scale
-            if i<2:
+            if i < 2:
                 scale.set("None")
-                Global_vars.outputs[facility_id][i] = (out_frame,1, n)
+                Global_vars.outputs[facility_id][i] = (out_frame, 1, n)
             else:
                 scale.set("None")
-                Global_vars.outputs[facility_id][i] = (out_frame,0, n)
+                Global_vars.outputs[facility_id][i] = (out_frame, 0, n)
                 out_frame.grid_forget()
                 scale.grid_forget()
 
@@ -316,20 +327,22 @@ def create_distillery(game:Plant_Builder.FactoryGame):
         dropdown = ttk.Combobox(frame, textvariable=n, state="readonly", width=1, font=Global_vars.factory_font)
         dropdown["values"] = reactions
         dropdown.current(1)
-        dropdown.bind("<<ComboboxSelected>>", lambda e, el_id=facility_id: update_fractions(game,e, el_id))
+        dropdown.bind("<<ComboboxSelected>>", lambda e, el_id=facility_id: update_fractions(game, e, el_id))
         dropdown.grid(column=1, row=0, sticky=tk.EW, padx=2, pady=2)
 
         progress.grid(column=1, row=1, sticky=tk.NSEW, padx=2, pady=2)
 
-
-        pwr_btn = tk.Button(frame, text=f"Off", command=lambda: game.toggle_branch(facility_id), font=Global_vars.factory_font)
+        pwr_btn = tk.Button(frame, text=f"Off", command=lambda: game.toggle_branch(facility_id),
+                            font=Global_vars.factory_font)
         pwr_btn.grid(column=1, row=2, sticky=tk.NSEW)
 
         label = ttk.Label(frame, text="", style="Bold.TLabel")
         label.bind("<Button-1>", lambda e: game.click_start(e, frame, facility_id))
         label.grid(column=1, row=3, columnspan=2, sticky=tk.NSEW, padx=2, pady=2)
 
-        Global_vars.facilities[facility_id] = {"unlocked":True,"educts":{"distillery":0},"products":{"distillery":0},"progress":0,"speed":20 * game.speed_div}
+        Global_vars.facilities[facility_id] = {"unlocked": True, "educts": {"distillery": 0},
+                                               "products": {"distillery": 0}, "progress": 0,
+                                               "speed": 20 * game.speed_div}
         Global_vars.power_buttons[facility_id] = pwr_btn
         Global_vars.storage_label[facility_id] = label
         Global_vars.in_production[facility_id] = 0
@@ -341,7 +354,7 @@ def create_distillery(game:Plant_Builder.FactoryGame):
         game.purchase_fail_event()
 
 
-def create_factory(game:Plant_Builder.FactoryGame, branch):
+def create_factory(game: Plant_Builder.FactoryGame, branch):
     if game.money >= game.production[branch]["base_cost"]:
         game.money -= game.production[branch]["base_cost"]
         game.money_change_event()
@@ -364,10 +377,10 @@ def create_factory(game:Plant_Builder.FactoryGame, branch):
         text += " => "
         pr = data["products"]
         if len(pr) > 0:
-            in_frame = tk.Frame(frame, background="orange", borderwidth=2, relief="ridge",width=20)
+            in_frame = tk.Frame(frame, background="orange", borderwidth=2, relief="ridge", width=20)
             in_frame.grid(column=2, row=0, rowspan=3, sticky=tk.NS, padx=2, pady=2)
             in_frame.bind("<Button-1>", lambda e: game.line_start(e, [frame]))
-            Global_vars.outputs[facility_id] = {0:(in_frame,1,None)}
+            Global_vars.outputs[facility_id] = {0: (in_frame, 1, None)}
             for prod, amount in pr.items():
                 if amount != 1:
                     text += f"{amount} "
@@ -387,8 +400,8 @@ def create_factory(game:Plant_Builder.FactoryGame, branch):
             btn.configure(fg="red")
         btn.grid(column=0, row=2, sticky=tk.NSEW)
 
-
-        pwr_btn = tk.Button(frame, text=f"Off", command=lambda b=facility_id: game.toggle_branch(b), font=Global_vars.factory_font)
+        pwr_btn = tk.Button(frame, text=f"Off", command=lambda b=facility_id: game.toggle_branch(b),
+                            font=Global_vars.factory_font)
         pwr_btn.grid(column=1, row=2, sticky=tk.NSEW)
 
         Global_vars.facilities[facility_id] = copy.deepcopy(data)
@@ -397,6 +410,6 @@ def create_factory(game:Plant_Builder.FactoryGame, branch):
         Global_vars.in_production[facility_id] = 0
         Global_vars.production_state[facility_id] = 0
 
-        Global_vars.facility_count -=- 1
+        Global_vars.facility_count -= - 1
     else:
         game.purchase_fail_event()

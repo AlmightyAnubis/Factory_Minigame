@@ -1,116 +1,116 @@
 {
-    "Electrolysis Plant": {
-        "level": 1,
-        "products": {
-            "Hydrogen": 2,
-            "Oxygen": 1
-        },
-        "educts": {
-            "Water": 3
-        },
-        "speed": 20000,
-        "base_cost": 20,
-        "unlock_cost": 10,
-        "progress": 0,
-        "value": 2,
-        "unlocked": true
+  "Electrolysis Plant": {
+    "level": 1,
+    "products": {
+      "Hydrogen": 2,
+      "Oxygen": 1
     },
-    "Methane Reactor": {
-        "level": 1,
-        "products": {
-            "Methane": 1
-        },
-        "educts": {
-            "Hydrogen": 4,
-            "Carbon": 1
-        },
-        "speed": 10000,
-        "base_cost": 200,
-        "unlock_cost": 150,
-        "progress": 0,
-        "value": 20,
-        "unlocked": false
+    "educts": {
+      "Water": 3
     },
-    "Ethene Reactor": {
-        "level": 1,
-        "products": {
-            "Ethene": 1
-        },
-        "educts": {
-            "Hydrogen": 4,
-            "Carbon": 2
-        },
-        "speed": 8000,
-        "base_cost": 300,
-        "unlock_cost": 250,
-        "progress": 0,
-        "value": 30,
-        "unlocked": false
+    "speed": 20000,
+    "base_cost": 20,
+    "unlock_cost": 10,
+    "progress": 0,
+    "value": 2,
+    "unlocked": true
+  },
+  "Methane Reactor": {
+    "level": 1,
+    "products": {
+      "Methane": 1
     },
-    "Polyethylene Reactor": {
-        "level": 1,
-        "products": {
-            "Polyethylene": 1
-        },
-        "educts": {
-            "Ethene": 2
-        },
-        "speed": 6000,
-        "base_cost": 500,
-        "unlock_cost": 300,
-        "progress": 0,
-        "value": 100,
-        "unlocked": false
+    "educts": {
+      "Hydrogen": 4,
+      "Carbon": 1
     },
-    "Ethanol Reactor": {
-        "level": 1,
-        "products": {
-            "Ethanol": 1
-        },
-        "educts": {
-            "Ethene": 1,
-            "Water": 1
-        },
-        "speed": 6000,
-        "base_cost": 500,
-        "unlock_cost": 200,
-        "progress": 0,
-        "value": 20,
-        "unlocked": false
+    "speed": 10000,
+    "base_cost": 200,
+    "unlock_cost": 150,
+    "progress": 0,
+    "value": 20,
+    "unlocked": false
+  },
+  "Ethene Reactor": {
+    "level": 1,
+    "products": {
+      "Ethene": 1
     },
-    "Acetic acid Reactor": {
-        "level": 1,
-        "products": {
-            "Acetic acid": 1,
-            "Water": 1
-        },
-        "educts": {
-            "Ethanol": 1,
-            "Oxygen": 1
-        },
-        "speed": 5000,
-        "base_cost": 500,
-        "unlock_cost": 300,
-        "progress": 0,
-        "value": 30,
-        "unlocked": false
+    "educts": {
+      "Hydrogen": 4,
+      "Carbon": 2
     },
-    "Ester Synthesis": {
-        "level": 1,
-        "products": {
-            "Ester": 1,
-            "Water": 1
-        },
-        "educts": {
-            "Ethanol": 1,
-            "Acetic acid": 1,
-            "Oxygen": 1
-        },
-        "speed": 1000,
-        "base_cost": 700,
-        "unlock_cost": 2000,
-        "progress": 0,
-        "value": 500,
-        "unlocked": false
-    }
+    "speed": 8000,
+    "base_cost": 300,
+    "unlock_cost": 250,
+    "progress": 0,
+    "value": 30,
+    "unlocked": false
+  },
+  "Polyethylene Reactor": {
+    "level": 1,
+    "products": {
+      "Polyethylene": 1
+    },
+    "educts": {
+      "Ethene": 2
+    },
+    "speed": 6000,
+    "base_cost": 500,
+    "unlock_cost": 300,
+    "progress": 0,
+    "value": 100,
+    "unlocked": false
+  },
+  "Ethanol Reactor": {
+    "level": 1,
+    "products": {
+      "Ethanol": 1
+    },
+    "educts": {
+      "Ethene": 1,
+      "Water": 1
+    },
+    "speed": 6000,
+    "base_cost": 500,
+    "unlock_cost": 200,
+    "progress": 0,
+    "value": 20,
+    "unlocked": false
+  },
+  "Acetic acid Reactor": {
+    "level": 1,
+    "products": {
+      "Acetic acid": 1,
+      "Water": 1
+    },
+    "educts": {
+      "Ethanol": 1,
+      "Oxygen": 1
+    },
+    "speed": 5000,
+    "base_cost": 500,
+    "unlock_cost": 300,
+    "progress": 0,
+    "value": 30,
+    "unlocked": false
+  },
+  "Ester Synthesis": {
+    "level": 1,
+    "products": {
+      "Ester": 1,
+      "Water": 1
+    },
+    "educts": {
+      "Ethanol": 1,
+      "Acetic acid": 1,
+      "Oxygen": 1
+    },
+    "speed": 1000,
+    "base_cost": 700,
+    "unlock_cost": 2000,
+    "progress": 0,
+    "value": 500,
+    "unlocked": false
+  }
 }

@@ -6,7 +6,7 @@ in chemistry and process engineering education.
 
 ## Explanation of the Interface
 
-The top cointains the author, the current balance as well as the time left.
+The top contains the author, the current balance as well as the time left.
 Depending on the mode, there are 2 timeframe: 10 minutes for a quick game and 60
 for a longer one. Both are recorded separately in the highscores.\
 Below the money, there is the current storage of chemicals and there worth. Look
@@ -54,7 +54,7 @@ first output will be used to output a species, so the distillery can not be used
 as a splitter. Like all facilities, it has a toggle button and is turned off by
 default.
 
-## Setup a factory
+## Set up a factory
 
 The beginning of all factories should be one or more production facilities. For
 the default setup, you should start with a pump, since it is cheap and produces
@@ -72,8 +72,8 @@ the setup.
 
 ## Additional Features
 
-- You can zoom in and out when you scroll using your mouse wheel inside the 
-  factory frame. Sadly, this feature is limited by the possibilities 
-  provided by python.
-- You can move around in the factory by holding clicking and moving the 
-  mouse button in the while inside the factory frame.
+- You can zoom in and out when you scroll using your mouse wheel inside the
+  factory frame. Sadly, this feature is limited by the possibilities provided by
+  python.
+- You can move around in the factory by holding clicking and moving the mouse
+  button in the while inside the factory frame.
