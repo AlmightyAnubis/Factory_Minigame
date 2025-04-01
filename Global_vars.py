@@ -31,3 +31,5 @@ factory_frames: list[ttk.Frame] = []
 style: ttk.Style
 factory_style: ttk.Style
 bar_style: ttk.Style
+
+window_dimensions: tuple[int, int, int, int]

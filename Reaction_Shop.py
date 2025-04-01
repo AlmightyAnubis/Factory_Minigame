@@ -1,3 +1,4 @@
+import ctypes
 import math
 import tkinter as tk
 
@@ -23,7 +24,7 @@ class GeneralDialog(tk.Tk):
         self.update()
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
-        scale_factor = 1
+        scale_factor = ctypes.windll.shcore.GetScaleFactorForDevice(0) / 100
         width = self.winfo_width()
         height = self.winfo_height()
         width = round(width / scale_factor)

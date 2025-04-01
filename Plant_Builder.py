@@ -183,6 +183,8 @@ class FactoryGame:
             self.speed_div /= 10
         self.update_production()
         root.state('zoomed')
+        self.root.update()
+        Global_vars.window_dimensions = (root.winfo_x(),root.winfo_y(),root.winfo_height(),root.winfo_width())
 
     text_size = 12
 
@@ -671,8 +673,9 @@ class FactoryGame:
         self.root.destroy()
 
     def calculate_path(self, k):
-        path = Path_Calculator.calculate_path(k, self)
-        Path_Calculator.PathDialog(path, self).center().show()
+        species = Path_Calculator.Species(k)
+        Path_Calculator.calculate_path(species, self)
+        Path_Calculator.PathDialog(species, self).center().show()
 
 
 if __name__ == "__main__":
