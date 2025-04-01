@@ -31,6 +31,22 @@
     "value": 20,
     "unlocked": false
   },
+  "Methane Combiner": {
+    "level": 1,
+    "products": {
+      "Ethene": 1,
+      "Hydrogen": 4
+    },
+    "educts": {
+      "Methane": 2
+    },
+    "speed": 10000,
+    "base_cost": 200,
+    "unlock_cost": 150,
+    "progress": 0,
+    "value": 20,
+    "unlocked": false
+  },
   "Ethene Reactor": {
     "level": 1,
     "products": {

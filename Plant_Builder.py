@@ -152,10 +152,10 @@ class FactoryGame:
         left_border = tk.Frame(self.production_frame)
         for key in self.product_amount.keys():
             button = tk.Button(self.production_frame, text=key + "($" + str(self.product_value[key]).rjust(3) + "):",
-                               command=lambda k=key: print(self.calculate_path(k)))
+                               command=lambda k=key: self.calculate_path(k))
             button.grid(row=row, column=column + 1, sticky=tk.EW)
             column -= - 1
-            label = tk.Label(self.production_frame, text="-", name=key.lower())
+            label = tk.Label(self.production_frame, text="-", font=Global_vars.font, name=key.lower(), anchor=tk.E)
             label.grid(row=row, column=column + 1, sticky=tk.EW)
             column -= - 1
             if column == 6:
@@ -393,10 +393,11 @@ class FactoryGame:
                                   line_end[1])
 
     def update_products(self):
-        component: tk.Label
         for k in self.product_amount.keys():
-            component = self.production_frame.children.get(k.lower())
-            component.configure(text="{:.1f}".format(self.product_amount[k]).rjust(3))
+            widget = self.production_frame.children.get(k.lower())
+            if isinstance(widget, tk.Label):
+                component: tk.Label = widget
+                component.configure(text="{:.1f}".format(self.product_amount[k]%10000).rjust(6))
 
     def money_change_event(self):
         money = "{:1.1f}".format(self.money)
