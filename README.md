@@ -77,3 +77,8 @@ the setup.
   python.
 - You can move around in the factory by holding clicking and moving the mouse
   button in the while inside the factory frame.
+- You can click on the species in the chemicals in the storage section. That 
+  way, a production path interface will be opened, that shows you different 
+  ways to obtain the chemical you clicked on. These paths may be larger than 
+  your screen, when the reaction network grows to large. Currently, circular 
+  reaction, for example catalytic reactions, can not be represented.
