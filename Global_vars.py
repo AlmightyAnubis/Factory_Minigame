@@ -2,6 +2,8 @@ import tkinter as tk
 import tkinter.font as tk_font
 from tkinter import ttk
 
+import networkx
+
 font: tk_font.Font
 factory_font: tk_font.Font
 
@@ -33,3 +35,6 @@ factory_style: ttk.Style
 bar_style: ttk.Style
 
 window_dimensions: tuple[int, int, int, int]
+
+current_graph = networkx.DiGraph()
+graph_label: dict = dict()

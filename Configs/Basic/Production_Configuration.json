@@ -15,7 +15,7 @@
   "Carbon Capturing Facility": {
     "level": 1,
     "products": {
-      "Carbon dioxide": 3.0
+      "Carbon": 1
     },
     "educts": {},
     "speed": 15000,
@@ -23,21 +23,6 @@
     "unlock_cost": 50,
     "progress": 0,
     "value": 5,
-    "unlocked": false
-  },
-  "Air Collector": {
-    "level": 1,
-    "products": {
-      "Nitrogen": 7.8,
-      "Oxygen": 2.1,
-      "Carbon dioxide": 0.04
-    },
-    "educts": {},
-    "speed": 50000.0,
-    "base_cost": 50.0,
-    "unlock_cost": 25.0,
-    "progress": 0,
-    "value": 0,
     "unlocked": false
   }
 }

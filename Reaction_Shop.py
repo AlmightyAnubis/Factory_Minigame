@@ -1,6 +1,7 @@
-import ctypes
 import math
 import tkinter as tk
+
+import Global_vars
 
 
 class GeneralDialog(tk.Tk):
@@ -22,15 +23,14 @@ class GeneralDialog(tk.Tk):
 
     def center(self):
         self.update()
-        screen_width = self.winfo_screenwidth()
-        screen_height = self.winfo_screenheight()
-        scale_factor = ctypes.windll.shcore.GetScaleFactorForDevice(0) / 100
+        screen_width = Global_vars.window_dimensions[3]
+        screen_height = Global_vars.window_dimensions[2]
         width = self.winfo_width()
         height = self.winfo_height()
-        width = round(width / scale_factor)
-        height = round(height / scale_factor)
-        x = int(((screen_width / 2) - (width / 2)) * scale_factor)
-        y = int(((screen_height / 2) - (height / 1.5)) * scale_factor)
+        width = round(width)
+        height = round(height)
+        x = int(((screen_width / 2) - (width / 2)))
+        y = int(((screen_height / 2) - (height / 2)))
         self.geometry(f"{width}x{height}+{x}+{y}")
         return self
 

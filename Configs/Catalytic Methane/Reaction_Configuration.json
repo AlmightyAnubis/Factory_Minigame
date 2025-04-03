@@ -1,0 +1,151 @@
+{
+  "Electrolysis Plant": {
+    "level": 1,
+    "products": {
+      "Hydrogen": 3,
+      "Oxygen": 1
+    },
+    "educts": {
+      "Water": 3
+    },
+    "speed": 20000,
+    "base_cost": 20,
+    "unlock_cost": 10,
+    "progress": 0,
+    "value": 2,
+    "unlocked": true
+  },
+  "Inverse Watergas Shift": {
+    "level": 1,
+    "products": {
+      "Carbon monoxide": 1.0,
+      "Water": 1.0
+    },
+    "educts": {
+      "Hydrogen": 1.0,
+      "Carbon dioxide": 1.0
+    },
+    "speed": 10000,
+    "base_cost": 100.0,
+    "unlock_cost": 50.0,
+    "progress": 0,
+    "value": 0,
+    "unlocked": true
+  },
+  "Hydrogen Adsorption": {
+    "level": 1,
+    "products": {
+      "Adsorpt Hydrogen": 1.0
+    },
+    "educts": {
+      "Hydrogen": 1.0,
+      "Paladium": 1.0
+    },
+    "speed": 10000,
+    "base_cost": 0,
+    "unlock_cost": 0,
+    "progress": 0,
+    "value": 0,
+    "unlocked": false
+  },
+  "Carbon Adsorbtion": {
+    "level": 1,
+    "products": {
+      "Adsorpt Carbon monoxide": 1.0
+    },
+    "educts": {
+      "Carbon monoxide": 1.0,
+      "Paladium": 1.0
+    },
+    "speed": 10000,
+    "base_cost": 0,
+    "unlock_cost": 0,
+    "progress": 0,
+    "value": 0,
+    "unlocked": false
+  },
+  "Adsorbed Reaction I": {
+    "level": 1,
+    "products": {
+      "Adsorpt Hydrocarbonmonoxide": 1.0,
+      "Paladium": 1.0
+    },
+    "educts": {
+      "Adsorpt Hydrogen": 1.0,
+      "Adsorpt Carbon monoxide": 1.0
+    },
+    "speed": 10000,
+    "base_cost": 0,
+    "unlock_cost": 0,
+    "progress": 0,
+    "value": 0,
+    "unlocked": false
+  },
+  "Adsorbed Reaction II": {
+    "level": 1,
+    "products": {
+      "Adsorpt Dihydrocarbonmonoxide": 1.0,
+      "Paladium": 1.0
+    },
+    "educts": {
+      "Adsorpt Hydrogen": 1.0,
+      "Adsorpt Hydrocarbonmonoxide": 1.0
+    },
+    "speed": 10000,
+    "base_cost": 0,
+    "unlock_cost": 0,
+    "progress": 0,
+    "value": 0,
+    "unlocked": false
+  },
+  "Adsorbed Reaction III": {
+    "level": 1,
+    "products": {
+      "Adsorpt Trihydrocarbonmonoxide": 1.0,
+      "Paladium": 1.0
+    },
+    "educts": {
+      "Adsorpt Hydrogen": 1.0,
+      "Adsorpt Dihydrocarbonmonoxide": 1.0
+    },
+    "speed": 10000,
+    "base_cost": 0,
+    "unlock_cost": 0,
+    "progress": 0,
+    "value": 0,
+    "unlocked": false
+  },
+  "Adsorbed Reaction IV": {
+    "level": 1,
+    "products": {
+      "Adsorpt Methanol": 1.0,
+      "Paladium": 1.0
+    },
+    "educts": {
+      "Adsorpt Hydrogen": 1.0,
+      "Adsorpt Trihydrocarbonmonoxide": 1.0
+    },
+    "speed": 10000,
+    "base_cost": 0,
+    "unlock_cost": 0,
+    "progress": 0,
+    "value": 0,
+    "unlocked": false
+  },
+  "Desorption": {
+    "level": 1,
+    "products": {
+      "Methanol": 1.0,
+      "Paladium": 1.0
+    },
+    "educts": {
+      "Adsorpt Methanol": 1.0
+    },
+    "speed": 10000,
+    "base_cost": 0,
+    "unlock_cost": 0,
+    "progress": 0,
+    "value": 0,
+    "unlocked": false
+  }
+}

@@ -1,7 +1,9 @@
+import ctypes
 import json
 import tkinter
 from tkinter import ttk, simpledialog
 
+import Global_vars
 import Reaction_Shop
 
 
@@ -54,12 +56,14 @@ class ReactionConfigManager(tkinter.Tk):
         new_reaction = {"level": 1, "products": {}, "educts": {}, "speed": 10000, "base_cost": 0, "unlock_cost": 0,
                         "progress": 0, "value": 0, "unlocked": False}
         self.reactions[name] = new_reaction
+        self.dropdown.config(values=list(self.reactions.keys()))
         self.dropdown.set(name)
         self.update_container()
 
     def remove_reaction(self):
         self.reactions.pop(self.dropdown.get())
-        self.dropdown.set(None)
+        self.dropdown.set("")
+        self.dropdown.config(values=list(self.reactions.keys()))
         self.update_container()
 
     def update_container(self, event=None):
@@ -87,7 +91,7 @@ class ReactionConfigManager(tkinter.Tk):
             for educt, amount in educts.items():
                 label = tkinter.Label(self.container, text=educt, font=('Arial', 10))
                 label.grid(column=0, row=i, sticky=tkinter.NSEW)
-                self.string_vars["e:" + educt] = tkinter.DoubleVar(value=amount)
+                self.string_vars["e:" + educt] = tkinter.StringVar(value=amount)
                 entry = tkinter.Entry(self.container, textvariable=self.string_vars["e:" + educt], font=('Arial', 10))
                 self.string_vars["e:" + educt].trace_add("write",
                                                          lambda name, index, mode, e=educt: self.update_educt(e))
@@ -107,7 +111,7 @@ class ReactionConfigManager(tkinter.Tk):
         for product, amount in products.items():
             label = tkinter.Label(self.container, text=product, font=('Arial', 10))
             label.grid(column=0, row=i, sticky=tkinter.NSEW)
-            self.string_vars["p:" + product] = tkinter.DoubleVar(value=amount)
+            self.string_vars["p:" + product] = tkinter.StringVar(value=amount)
             entry = tkinter.Entry(self.container, textvariable=self.string_vars["p:" + product], font=('Arial', 10))
             self.string_vars["p:" + product].trace_add("write",
                                                        lambda name, index, mode, p=product: self.update_product(p))
@@ -193,7 +197,8 @@ class ReactionConfigManager(tkinter.Tk):
         products: dict
         products = selected["educts"]
         var = self.string_vars["e:" + e]
-        products[e] = var.get()
+        if var.get() != "":
+            products[e] = float(var.get())
 
     def update_product(self, p):
         reaction = self.dropdown.get()
@@ -201,7 +206,8 @@ class ReactionConfigManager(tkinter.Tk):
         products: dict
         products = selected["products"]
         var = self.string_vars["p:" + p]
-        products[p] = var.get()
+        if var.get() != "":
+            products[p] = float(var.get())
 
     def update_value(self, name):
         selected = self.reactions[self.dropdown.get()]
@@ -213,15 +219,14 @@ class ReactionConfigManager(tkinter.Tk):
 
     def center(self):
         self.update()
-        screen_width = self.winfo_screenwidth()
-        screen_height = self.winfo_screenheight()
-        scale_factor = 1
+        screen_width = Global_vars.window_dimensions[3]
+        screen_height = Global_vars.window_dimensions[2]
         width = self.winfo_width()
         height = self.winfo_height()
-        width = round(width / scale_factor)
-        height = round(height / scale_factor)
-        x = int(((screen_width / 2) - (width / 2)) * scale_factor)
-        y = int(((screen_height / 3) - (height / 2)) * scale_factor)
+        width = round(width)
+        height = round(height)
+        x = int(((screen_width / 2) - (width / 2)))
+        y = int(((screen_height / 2) - (height / 2)))
         self.geometry('+%d+%d' % (x, y))
         return self
 
@@ -240,9 +245,22 @@ class ReactionConfigManager(tkinter.Tk):
         return self.result
 
 
+user32 = ctypes.windll.user32
+screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
+
+screen_width = screensize[0]
+screen_height = screensize[1]
+Global_vars.window_dimensions = (0,0, screen_height, screen_width)
+
+
 keys = ["Reaction", "Production"]
 mode = Reaction_Shop.GeneralDialog("Select Config to edit",
                                    keys).center().show()
+if mode == "":
+    exit(0)
+
+
+
 
 dialog = ReactionConfigManager(mode)
 dialog.center()

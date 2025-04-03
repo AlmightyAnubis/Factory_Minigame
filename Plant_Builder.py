@@ -8,6 +8,8 @@ import tkinter.messagebox
 import tkinter.simpledialog
 from tkinter import ttk
 
+import networkx
+
 import Facilitys
 import Global_vars
 import Path_Calculator
@@ -30,18 +32,52 @@ class FactoryGame:
             "Water": "H2O",
             "Hydrogen": "H2",
             "Oxygen": "O2",
+            "Nitrogen": "N2",
             "Carbon": "C",
+            "Carbon monoxide": "CO",
+            "Carbon dioxide": "CO2",
             "Methane": "CH4",
-            "Ethene": "C2H4",
+            "Methanol": "CH3OH",
+            "Dimethyl ether": "CH3OCH3",
+            "Ethylene": "C2H4",
+            "Propylen": "C3H6",
             "Polyethylene": "(-C2H4-)n",
             "Ethanol": "C2H5OH",
             "Acetic acid": "C2H4O2",
-            "Ester": "C4H7O3"
+            "Ester": "C4H7O3",
+            "Paladium": "Pd",
+            "Adsorpt Hydrogen": "H*",
+            "Adsorpt Carbon monoxide": "CO*",
+            "Adsorpt Hydrocarbonmonoxide":"CHO*",
+            "Adsorpt Dihydrocarbonmonoxide":"CH2O*",
+            "Adsorpt Trihydrocarbonmonoxide":"CH3O*",
+            "Adsorpt Methanol":"CH3OH*"
         }
 
-        self.product_value = {"Water": 0.1, "Hydrogen": 2, "Oxygen": 3, "Carbon": 5, "Methane": 20, "Ethene": 30,
-                              "Polyethylene": 100, "Ethanol": 20, "Acetic acid": 30,
-                              "Ester": 500}
+        self.product_value = {"Water": 0.1,
+                              "Hydrogen": 2,
+                              "Oxygen": 3,
+                              "Nitrogen": 0,
+                              "Carbon": 5,
+                              "Carbon monoxide": 3,
+                              "Carbon dioxide": 0.1,
+                              "Methane": 20,
+                              "Methanol": 25,
+                              "Dimethyl ether": 55,
+                              "Ethylene": 30,
+                              "Propylen": 40,
+                              "Polyethylene": 100,
+                              "Ethanol": 20,
+                              "Acetic acid": 30,
+                              "Ester": 500,
+                              "Paladium": 500,
+                              "Adsorpt Hydrogen": 0,
+                              "Adsorpt Carbon monoxide": 0,
+                              "Adsorpt Hydrocarbonmonoxide": 0,
+                              "Adsorpt Dihydrocarbonmonoxide": 0,
+                              "Adsorpt Trihydrocarbonmonoxide": 0,
+                              "Adsorpt Methanol": 0
+                              }
 
         # Edit Production_Configuration.json with Config_Manager, don't forget to add new chemicals to self.product_value and self.chem_map
         self.production: dict[str, dict]
@@ -61,9 +97,14 @@ class FactoryGame:
         # END OF CONFIG
 
         reaction_grid_width = 2 * len(self.production.keys()) // 7
-        self.product_amount = {"Water": 0, "Hydrogen": 0, "Oxygen": 0, "Carbon": 0, "Methane": 0, "Ethene": 0,
-                               "Polyethylene": 0, "Ethanol": 0, "Acetic acid": 0,
-                               "Ester": 0}
+        self.product_amount = {}
+        for key in self.chem_map.keys():
+            species = Path_Calculator.Species(key)
+            Global_vars.current_graph = networkx.DiGraph()
+            Global_vars.current_graph.add_node(species)
+            found_path = Path_Calculator.calculate_path(species, self)
+            if found_path:
+                self.product_amount[key] = 0
 
         self.time *= 1000
 
@@ -150,6 +191,7 @@ class FactoryGame:
         key: str
 
         left_border = tk.Frame(self.production_frame)
+        print(self.product_amount.keys())
         for key in self.product_amount.keys():
             button = tk.Button(self.production_frame, text=key + "($" + str(self.product_value[key]).rjust(3) + "):",
                                command=lambda k=key: self.calculate_path(k))
@@ -639,6 +681,8 @@ class FactoryGame:
             long_records[line[0] + "\t" + line[1]] = float(line[2])
 
         name = tkinter.simpledialog.askstring("Enter name", "Enter Player name for highscore:")
+        if name == "":
+            name = "No Name"
         name = name.replace("\t", "-")
         x = datetime.datetime.now()
         name = name + "\t" + x.strftime("%d.%m.%Y %H:%M")
@@ -672,11 +716,16 @@ class FactoryGame:
             tk.messagebox.showinfo("Highscore", result, icon=None)
         self.root.destroy()
 
-    def calculate_path(self, k):
-        species = Path_Calculator.Species(k)
-        Path_Calculator.calculate_path(species, self)
-        Path_Calculator.PathDialog(species, self).center().show()
-
+    def calculate_path(self, key):
+        species = Path_Calculator.Species(key)
+        graph = networkx.DiGraph()
+        Global_vars.current_graph = graph
+        graph.add_node(species)
+        found_path = Path_Calculator.calculate_path(species, self, debug=False)
+        if found_path:
+            Path_Calculator.PathDialog(species, self).center().show()
+        else:
+            tk.messagebox.showerror("Reaction missing", "Species not available")
 
 if __name__ == "__main__":
     root = tk.Tk()
