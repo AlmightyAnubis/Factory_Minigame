@@ -9,6 +9,7 @@ import tkinter.simpledialog
 from tkinter import ttk
 
 import networkx
+from matplotlib import pyplot as plt
 
 import Facilitys
 import Global_vars
@@ -29,6 +30,7 @@ class FactoryGame:
             self.money = 3000.0
             self.time = 10 * 60
         self.chem_map = {
+            "Energy": "Energy",
             "Water": "H2O",
             "Hydrogen": "H2",
             "Oxygen": "O2",
@@ -48,38 +50,27 @@ class FactoryGame:
             "Paladium": "Pd",
             "Adsorpt Hydrogen": "H*",
             "Adsorpt Carbon monoxide": "CO*",
+            "Adsorpt Carbon": "C*",
             "Adsorpt Hydrocarbonmonoxide":"CHO*",
             "Adsorpt Dihydrocarbonmonoxide":"CH2O*",
             "Adsorpt Trihydrocarbonmonoxide":"CH3O*",
-            "Adsorpt Methanol":"CH3OH*"
+            "Adsorpt Methanol":"CH3OH*",
+            "Adsorpt Methane": "CH4*",
+            "Adsorpt CH3": "CH3*",
+            "Adsorpt CH2": "CH2*",
+            "Adsorpt CH": "CH*",
+            "Adsorpt Oxygen": "O*",
+            "Adsorpt Hydroxyl": "OH*"
         }
 
-        self.product_value = {"Water": 0.1,
-                              "Hydrogen": 2,
-                              "Oxygen": 3,
-                              "Nitrogen": 0,
-                              "Carbon": 5,
-                              "Carbon monoxide": 3,
-                              "Carbon dioxide": 0.1,
-                              "Methane": 20,
-                              "Methanol": 25,
-                              "Dimethyl ether": 55,
-                              "Ethylene": 30,
-                              "Propylen": 40,
-                              "Polyethylene": 100,
-                              "Ethanol": 20,
-                              "Acetic acid": 30,
-                              "Ester": 500,
-                              "Paladium": 500,
-                              "Adsorpt Hydrogen": 0,
-                              "Adsorpt Carbon monoxide": 0,
-                              "Adsorpt Hydrocarbonmonoxide": 0,
-                              "Adsorpt Dihydrocarbonmonoxide": 0,
-                              "Adsorpt Trihydrocarbonmonoxide": 0,
-                              "Adsorpt Methanol": 0
-                              }
-
         # Edit Production_Configuration.json with Config_Manager, don't forget to add new chemicals to self.product_value and self.chem_map
+        self.product_value: dict[str, float]
+        config_file = open("Prices.json", "r")
+        json_ob = config_file.read()
+        config_file.close()
+        self.product_value = json.loads(json_ob)
+
+
         self.production: dict[str, dict]
         config_file = open("Production_Configuration.json", "r")
         json_ob = config_file.read()
@@ -100,11 +91,63 @@ class FactoryGame:
         self.product_amount = {}
         for key in self.chem_map.keys():
             species = Path_Calculator.Species(key)
-            Global_vars.current_graph = networkx.DiGraph()
+            Global_vars.current_graph = networkx.MultiDiGraph()
             Global_vars.current_graph.add_node(species)
             found_path = Path_Calculator.calculate_path(species, self)
             if found_path:
                 self.product_amount[key] = 0
+
+        Global_vars.complete_graph = networkx.MultiDiGraph()
+        comp_graph = Global_vars.complete_graph
+        species_list = list()
+        for key,reaction in self.reaction.items():
+            reaction_node = Path_Calculator.Reaction(key)
+            comp_graph.add_node(reaction_node)
+            nodes = comp_graph.nodes
+            node_map = {}
+            for node in nodes:
+                node_map[node.name] = node
+            educts = reaction["educts"]
+            for educt in educts:
+                educt_node = None
+                if educt in node_map:
+                    educt_node = node_map[educt]
+                if educt_node is None:
+                    educt_node = Path_Calculator.Species(educt)
+                    species_list.append(educt_node)
+                    comp_graph.add_node(educt_node)
+                comp_graph.add_edge(educt_node, reaction_node)
+
+            products = reaction["products"]
+            product_node = None
+            for product in products:
+                if product in node_map:
+                    product_node = node_map[product]
+                if product_node is None:
+                    product_node = Path_Calculator.Species(product)
+                    species_list.append(product_node)
+                    comp_graph.add_node(product_node)
+                comp_graph.add_edge(reaction_node,product_node)
+
+        #for node in species_list:
+        #    outputs = list(comp_graph.successors(node))
+        #    inputs =list(comp_graph.predecessors(node))
+        #    if len(inputs) == 0 or len(outputs) == 0:
+        #        continue
+        #    for input in inputs:
+        #        for output in outputs:
+        #            comp_graph.add_edge(input, output, name=node.name)
+        #    comp_graph.remove_node(node)
+
+
+        #plt.figure(figsize=(32, 18), dpi=400)
+        #plt.title("Complete Reaction Network")
+        #pos = networkx.spring_layout(Global_vars.complete_graph, scale=30, k = 1.8, threshold=0.000001)
+        #networkx.draw(Global_vars.complete_graph, pos, with_labels=True)
+        #attributes = networkx.get_edge_attributes(Global_vars.complete_graph, "name")
+        #networkx.draw_networkx_edge_labels(Global_vars.complete_graph, pos, attributes)
+        #plt.show()
+        #plt.savefig("screenshot.svg", format='svg')
 
         self.time *= 1000
 
@@ -191,7 +234,7 @@ class FactoryGame:
         key: str
 
         left_border = tk.Frame(self.production_frame)
-        print(self.product_amount.keys())
+
         for key in self.product_amount.keys():
             button = tk.Button(self.production_frame, text=key + "($" + str(self.product_value[key]).rjust(3) + "):",
                                command=lambda k=key: self.calculate_path(k))
@@ -718,10 +761,10 @@ class FactoryGame:
 
     def calculate_path(self, key):
         species = Path_Calculator.Species(key)
-        graph = networkx.DiGraph()
+        graph = networkx.MultiDiGraph()
         Global_vars.current_graph = graph
         graph.add_node(species)
-        found_path = Path_Calculator.calculate_path(species, self, debug=False)
+        found_path = Path_Calculator.calculate_path(species, self, debug=1)
         if found_path:
             Path_Calculator.PathDialog(species, self).center().show()
         else:

@@ -100,5 +100,20 @@
     "progress": 0,
     "value": 0,
     "unlocked": false
+  },
+  "Polyethylene Reactor": {
+    "level": 1,
+    "products": {
+      "Polyethylene": 1
+    },
+    "educts": {
+      "Ethylene": 2
+    },
+    "speed": 6000,
+    "base_cost": 500,
+    "unlock_cost": 300,
+    "progress": 0,
+    "value": 100,
+    "unlocked": false
   }
 }

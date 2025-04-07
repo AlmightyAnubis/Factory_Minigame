@@ -81,4 +81,17 @@ the setup.
   way, a production path interface will be opened, that shows you different 
   ways to obtain the chemical you clicked on. These paths may be larger than 
   your screen, when the reaction network grows to large. Currently, circular 
-  reaction, for example catalytic reactions, can not be represented.
+  reaction, for example catalytic reactions, can not be represented. If you 
+  want to save the current reaction path to an Image, you can do so via the 
+  "Save" Button.
+
+## Modify the configuration
+There are already some basic configurations for different aspects of 
+chemical engineering, but they only show a fraction of what is possible and 
+should be handled like examples. They are found in the [Config](Configs) Folder.
+If you want to modify the configs yourself, you can just edit the json files 
+([Prices](Prices.json),[Production](Production_Configuration.json),
+[Reactions](Reaction_Configuration.json)).
+If you want a bit of help with that, you can also use the 
+[Manager](Config_Manager.py). It allows you to setup reactions and 
+production facilities easily.

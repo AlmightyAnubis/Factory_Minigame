@@ -36,5 +36,7 @@ bar_style: ttk.Style
 
 window_dimensions: tuple[int, int, int, int]
 
-current_graph = networkx.DiGraph()
+current_graph : networkx.MultiDiGraph = networkx.MultiDiGraph()
 graph_label: dict = dict()
+
+complete_graph : networkx.MultiDiGraph = networkx.MultiDiGraph()

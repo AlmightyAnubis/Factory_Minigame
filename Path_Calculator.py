@@ -1,6 +1,8 @@
 import ctypes
+import os
 import random
 import random
+import time
 import tkinter
 import tkinter.font as tk_font
 from copy import deepcopy
@@ -36,9 +38,10 @@ class Reaction(BaseMixin):
 
 double_use_mode = True
 
-def calculate_path(species: Species, game, parent_reactions = None, parent_path = None, do_compressed=True, debug=False):
+def calculate_path(species: Species, game, parent_reactions = None, parent_path = None, do_compressed=True, debug=0):
     graph = Global_vars.current_graph
-    print(species)
+    if debug==1:
+        print(species)
     if parent_reactions is None:
         parent_reactions = list()
     production_fac = game.production
@@ -67,7 +70,8 @@ def calculate_path(species: Species, game, parent_reactions = None, parent_path 
 
     # Check if any production or reaction is available for selected product
     if species.name not in reaction_products and species.name not in base_products:
-        print("<- failed " + species.name)
+        if debug==1:
+            print("<- failed " + species.name)
         return False
 
     #reaction_dict: dict[:,[list,tkinter.Label]]
@@ -75,6 +79,7 @@ def calculate_path(species: Species, game, parent_reactions = None, parent_path 
     #result: dict[str,dict] = dict()
     #result[species] =  reaction_dict
 
+    found_path = False
     # Production is beginning, so don't go elsewhere from here
     if species.name in base_products:
         for production_key in base_products[species.name]:
@@ -90,8 +95,13 @@ def calculate_path(species: Species, game, parent_reactions = None, parent_path 
             if not found_node:
                 graph.add_node(reaction)
             graph.add_edge(reaction, species)
-        print("<- found " + species.name)
-        return True
+        if debug==1:
+            print("<- found " + species.name)
+        found_path = True
+
+    if species.name not in reaction_products:
+        return found_path
+
     # Product now is for save in any reaction
 
     # Get all reactions for the species
@@ -100,39 +110,76 @@ def calculate_path(species: Species, game, parent_reactions = None, parent_path 
     #if do_compressed:
     #    copied = deepcopy(used_reactions)
     #    copied.extend(first_reactions)
-    found_path = False
+
     for reaction_key in first_reactions:
-        if reaction_key in parent_reactions:
-            print("Circle Found for ", species, " from ", reaction_key)
-            reaction_list = list()
-            new_key = reaction_key
-            reaction_list.append(reaction_key)
-            pre = list(graph.successors(species))
-            new_key = pre[0]
-            while new_key.name!=reaction_key:
-                reaction_list.append(new_key.name)
-                pre = list(graph.successors(new_key))
-                new_key = pre[0]
-                pre = list(graph.successors(new_key))
-                new_key = pre[0]
-            print("Loop: ", reaction_list)
 
-
-
-
-            continue
         reaction_educts = reactions[reaction_key]["educts"]
         reaction = Reaction(reaction_key)
         found_node = False
-        if double_use_mode:
-            for node in graph:
-                if isinstance(node, Reaction):
-                    if node.name == reaction_key:
-                        reaction = node
-                        found_node = True
-                        found_path = True
-                        graph.add_edge(reaction, species)
-                        break
+
+
+        if reaction_key in parent_reactions:
+            if debug:
+                print("Circle Found for ", species, " from ", reaction_key)
+            reaction_list: list[BaseMixin] = list()
+            new_key = reaction_key
+
+            reaction_list.append(Reaction(reaction_key))
+            reaction_list.append(species)
+            pre = list(graph.successors(species))
+            new_key = pre[0]
+            while new_key.name!=reaction_key:
+                reaction_list.append(new_key)
+                pre = list(graph.successors(new_key))
+                new_key = pre[0]
+            suc = list(graph.predecessors(new_key))
+            if debug == 1:
+                for sub_r in reaction_list:
+                    print("->", sub_r, end="")
+
+
+            reaction_multiplier = 1
+            total = dict()
+            for i in range(len(reaction_list)//2):
+                pre_reaction_multiplier = reaction_multiplier
+                circle_reaction = reaction_list[i*2]
+                circle_species = reaction_list[i*2+1]
+                pre_circle_species = reaction_list[i * 2 - 1]
+                if circle_reaction.name in reactions:
+                    reaction_educts = reactions[circle_reaction.name]["educts"]
+                    reaction_products = reactions[circle_reaction.name]["products"]
+                    pre_reaction_multiplier /= reaction_educts[pre_circle_species.name]
+                    if debug == 1:
+                        print(circle_reaction.name, pre_reaction_multiplier)
+                    for educt in reaction_educts:
+                        if educt in total:
+                            total[educt] -= reaction_educts[educt] * pre_reaction_multiplier
+                        else:
+                            total[educt] = -reaction_educts[educt] * pre_reaction_multiplier
+                    for product in reaction_products:
+                        if product in total:
+                            total[product] += reaction_products[product] * pre_reaction_multiplier
+                        else:
+                            total[product] = reaction_products[product] * pre_reaction_multiplier
+                    reaction_multiplier = pre_reaction_multiplier * reaction_products[circle_species.name]
+            if debug == 1:
+                print("Total: ", total)
+            if total[species.name] <= 0:
+                continue
+            if debug == 1:
+                print("Found working Loop")
+            continue
+        else:
+            if double_use_mode:
+                for node in graph:
+                    if isinstance(node, Reaction):
+                        if node.name == reaction_key:
+                            reaction = node
+                            found_node = True
+                            found_path = True
+                            graph.add_edge(reaction, species)
+                            break
+
 
         if not found_node:
             graph.add_node(reaction)
@@ -161,7 +208,7 @@ def calculate_path(species: Species, game, parent_reactions = None, parent_path 
     found_str = ""
     if found_path:
         found_str = "found"
-        if debug:
+        if debug == 2:
             plt.figure(figsize=(32, 18))
             plt.title(species.name)
             pos = networkx.spring_layout(graph)
@@ -171,7 +218,8 @@ def calculate_path(species: Species, game, parent_reactions = None, parent_path 
             plt.show()
     else:
         found_str = "failed"
-    print("<- " + found_str + " " + species.name)
+    if debug == 1:
+        print("<- " + found_str + " " + species.name)
     return found_path
 
 def get_reaction_str(reaction_name, game, span=1):
@@ -210,6 +258,7 @@ class PathDialog(tkinter.Tk):
     species: Species = None
 
     min_col_width = 100
+    min_row_height = 10
 
     def __init__(self, path: Species, game, expanded = False):
         super().__init__()
@@ -227,6 +276,7 @@ class PathDialog(tkinter.Tk):
         self.game = game
         self.species = path
 
+
         graph = Global_vars.current_graph
         output = Reaction("Output")
         for suc in graph.predecessors(path):
@@ -234,33 +284,37 @@ class PathDialog(tkinter.Tk):
 
         # path -> result = (species, reaction_dict)
         self.container = tkinter.Canvas(self)
-        self.container.grid(row=0, column=0, columnspan = 3, padx=5, pady=5, sticky=tkinter.NSEW)
+        self.container.grid(row=0, column=0, columnspan = 2, padx=5, pady=5, sticky=tkinter.NSEW)
         start_row = 100
         row, height = self.generate_reaction_labels(output, start_row, 100)
         self.container.grid_columnconfigure(list(range(100-height+2,100)), minsize=self.min_col_width)
         affected_rows = list(range(min(start_row, start_row + row),max(start_row,start_row + row)))
-        self.container.grid_rowconfigure(affected_rows, minsize=10)
+        self.container.grid_rowconfigure(affected_rows, minsize=self.min_row_height)
         self.container.update()
         self.generate_flow_arrows(output)
         text = "Expand"
         if expanded:
             text = "Collapse"
-        expand = tkinter.Button(self, text=text, font=('Arial', 15), command=lambda e=expanded: self.expand(e))
-        expand.grid(column=0, row=1, padx=5, pady=5, sticky=tkinter.NSEW)
+        #expand = tkinter.Button(self, text=text, font=('Arial', 15), command=lambda e=expanded: self.expand(e))
+        #expand.grid(column=0, row=1, padx=5, pady=5, sticky=tkinter.NSEW)
 
         screenshot = tkinter.Button(self, text="Save", font=('Arial', 15))
         screenshot.configure(command=lambda s=screenshot: self.capture_window(s))
-        screenshot.grid(column=1, row=1, padx=5, pady=5, sticky=tkinter.NSEW)
+        screenshot.grid(column=0, row=1, padx=5, pady=5, sticky=tkinter.NSEW)
 
         close = tkinter.Button(self, text="Close", font=('Arial', 15), command=lambda: self.on_ok())
-        close.grid(column=2, row=1, padx=5, pady=5, sticky=tkinter.NSEW)
+        close.grid(column=1, row=1, padx=5, pady=5, sticky=tkinter.NSEW)
+
+        #self.bind('<Key>', lambda key: self.locate(key))
+        #self.bind('<FocusIn>', print("Focus"))
+        self.wm_attributes('-topmost', True)
+
 
     def generate_reaction_labels(self, species: Reaction, parent_row, parent_column):
         graph = Global_vars.current_graph
         row = parent_row
         labels = list()
         height = 1
-        print(species.name,len(list(graph.predecessors(species))))
         for reaction in graph.predecessors(species):
             if reaction.name not in color_map:
                 color_map[reaction.name] = "#{0:06X}".format(
@@ -293,8 +347,15 @@ class PathDialog(tkinter.Tk):
                     new_column =min(parent_column - 1, old_column)
                     old_row = label.grid_info()["row"]
                     new_row =min(row, old_row)
+                    if new_row == old_row:
+                        new_row = old_row - 2
+                    #new_row = row
+                    if reaction.name == "Water Pump":
+                        print(old_row, row, new_row)
                     span = label.grid_info()["rowspan"]
                     label.grid(column=new_column,row=new_row, rowspan=span, sticky=tkinter.NSEW)
+                    label.update()
+                    #time.sleep(0.1)
 
                 row += span_0
 
@@ -305,52 +366,60 @@ class PathDialog(tkinter.Tk):
         attributes = networkx.get_edge_attributes(graph, "name")
         for reaction in graph.predecessors(parent_reaction):
             label = reaction.label
-            species = attributes[(reaction,parent_reaction)]
-            if species not in color_map:
-                color_map[species] = "#{0:06X}".format(
-                    random.randrange(128) + 256 * (
-                                random.randrange(128) + 256 * (random.randrange(128))))
+            specieses = graph.get_edge_data(reaction,parent_reaction)
+            inital_offset = 0
+            for key,species in specieses.items():
+                species = species["name"]
 
-            self.generate_flow_arrows(reaction, label)
+                if species not in color_map:
+                    color_map[species] = "#{0:06X}".format(
+                        random.randrange(128) + 256 * (
+                                    random.randrange(128) + 256 * (random.randrange(128))))
 
-            if parent_label is None:
-                continue
-            x1 = label.winfo_x()
-            y1 = label.winfo_y()
-            width1 = label.winfo_width()
-            height1 = label.winfo_height()
-            start = (x1 + width1,y1 + height1/2)
+                self.generate_flow_arrows(reaction, label)
 
-            x2 = parent_label.winfo_x()
-            y2 = parent_label.winfo_y()
-            width2 = parent_label.winfo_width()
-            height2 = parent_label.winfo_height()
-            end = (x2, y2 + height2/2)
+                if parent_label is None:
+                    continue
+                x1 = label.winfo_x()
+                y1 = label.winfo_y() + inital_offset
+                width1 = label.winfo_width()
+                height1 = label.winfo_height()
+                start = (x1 + width1,y1 + height1/2)
 
-            color = color_map[species]
+                x2 = parent_label.winfo_x()
+                y2 = parent_label.winfo_y()
+                width2 = parent_label.winfo_width()
+                height2 = parent_label.winfo_height()
+                end = (x2, y2 + height2/2)
 
-            horizontal = x2-(x1 + width1)<=self.min_col_width
-            horizontal = horizontal and start[1]>y2
-            if start[1]==end[1] or horizontal:
-                end = (end[0], start[1])
-                arrow = self.container.create_line(start[0],start[1], end[0], end[1], fill=color, arrow=tkinter.LAST)
-                self.container.tag_lower(arrow)
-                text_obj = self.container.create_text(start[0] + (end[0] - start[0]) / 2, start[1] + (end[1] - start[1]) / 2, font=('Arial', 12,tk_font.BOLD), anchor="center", text=self.game.chem_map[species], fill=color)
-                bbox = self.container.bbox(text_obj)
-                self.container.create_rectangle(bbox[0], bbox[1], bbox[2], bbox[3], fill=self.container["bg"])
-                self.container.tag_raise(text_obj)
-            else:
-                end = (x2, y2 + height1 / 2)
-                arrow1 = self.container.create_line(start[0], start[1], end[0] - self.min_col_width/10 - (x2-x1)/20, start[1], fill=color)
-                arrow2 = self.container.create_line(end[0] - self.min_col_width/10 - (x2-x1)/20, start[1], end[0] - self.min_col_width/10 - (x2-x1)/20, end[1], fill=color)
-                arrow3 = self.container.create_line(end[0] - self.min_col_width/10 - (x2-x1)/20 , end[1], end[0], end[1], fill=color, arrow=tkinter.LAST)
-                self.container.tag_lower(arrow1)
-                self.container.tag_lower(arrow2)
-                self.container.tag_lower(arrow3)
-                text_obj = self.container.create_text(end[0] - self.min_col_width/10 - (x2-x1)/20,start[1] + (end[1] - start[1]) / 2, font=('Arial', 12,tk_font.BOLD), anchor="center", text=self.game.chem_map[species], fill=color)
-                bbox = self.container.bbox(text_obj)
-                self.container.create_rectangle(bbox[0], bbox[1], bbox[2], bbox[3], fill=self.container["bg"], outline=color)
-                self.container.tag_raise(text_obj)
+                color = color_map[species]
+
+                #horizontal = x2-(x1 + width1)<=self.min_col_width
+                horizontal = start[1]>y2 #and horizontal
+                if end[1] == start[1]  or horizontal:
+                    end = (end[0], start[1])
+                    arrow = self.container.create_line(start[0],start[1], end[0], end[1], fill=color, arrow=tkinter.LAST)
+                    self.container.tag_lower(arrow)
+                    text_obj = self.container.create_text(end[0] - self.min_col_width * 3/5, start[1], font=('Arial', 12,tk_font.BOLD), anchor="center", text=self.game.chem_map[species], fill=color)
+                    bbox = self.container.bbox(text_obj)
+                    self.container.create_rectangle(bbox[0], bbox[1], bbox[2], bbox[3], fill=self.container["bg"])
+                    self.container.tag_raise(text_obj)
+                else:
+                    end = (x2, y2 + height1 / 2)
+                    if abs(end[1]-start[1])<= self.min_row_height*1.1:
+                        end = (end[0], start[1])
+                    arrow1 = self.container.create_line(start[0], start[1], end[0] - self.min_col_width/7 - (x2-x1)/20, start[1], fill=color)
+                    arrow2 = self.container.create_line(end[0] - self.min_col_width/7 - (x2-x1)/20, start[1], end[0] - self.min_col_width/7 - (x2-x1)/20, end[1], fill=color)
+                    arrow3 = self.container.create_line(end[0] - self.min_col_width/7 - (x2-x1)/20 , end[1], end[0], end[1], fill=color, arrow=tkinter.LAST)
+                    self.container.tag_lower(arrow1)
+                    self.container.tag_lower(arrow2)
+                    self.container.tag_lower(arrow3)
+                    text_obj = self.container.create_text(end[0] - self.min_col_width/7 - (x2-x1)/20,start[1] + (end[1] - start[1]) / 2, font=('Arial', 12,tk_font.BOLD), anchor="center", text=self.game.chem_map[species], fill=color)
+                    bbox = self.container.bbox(text_obj)
+                    self.container.create_rectangle(bbox[0], bbox[1], bbox[2], bbox[3], fill=self.container["bg"], outline=color)
+                    self.container.tag_raise(text_obj)
+                inital_offset += 24
+                self.container.update()
 
     def capture_window(self, widget:tkinter.Widget):
         scaleFactor = ctypes.windll.shcore.GetScaleFactorForDevice(0) / 100

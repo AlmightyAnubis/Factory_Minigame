@@ -2,11 +2,11 @@
   "Electrolysis Plant": {
     "level": 1,
     "products": {
-      "Hydrogen": 2.0,
-      "Oxygen": 1.0
+      "Hydrogen": 3,
+      "Oxygen": 1
     },
     "educts": {
-      "Water": 2.0
+      "Water": 3
     },
     "speed": 20000,
     "base_cost": 20,
@@ -32,71 +32,118 @@
     "value": 0,
     "unlocked": true
   },
-  "Methanol Synthesis": {
+  "Hydrogen Adsorption": {
     "level": 1,
     "products": {
-      "Methanol": 1.0
+      "Adsorpt Hydrogen": 1.0
+    },
+    "educts": {
+      "Hydrogen": 1.0,
+      "Paladium": 1.0
+    },
+    "speed": 10000,
+    "base_cost": 0,
+    "unlock_cost": 0,
+    "progress": 0,
+    "value": 0,
+    "unlocked": false
+  },
+  "Carbon Adsorbtion": {
+    "level": 1,
+    "products": {
+      "Adsorpt Carbon monoxide": 1.0
     },
     "educts": {
       "Carbon monoxide": 1.0,
-      "Hydrogen": 2.0
+      "Paladium": 1.0
     },
     "speed": 10000,
-    "base_cost": 200.0,
-    "unlock_cost": 150.0,
+    "base_cost": 0,
+    "unlock_cost": 0,
     "progress": 0,
     "value": 0,
     "unlocked": false
   },
-  "Methane Synthesis": {
+  "Adsorbed Reaction I": {
     "level": 1,
     "products": {
-      "Methane": 1.0,
-      "Water": 1.0
+      "Adsorpt Hydrocarbonmonoxide": 1.0,
+      "Paladium": 1.0
     },
     "educts": {
-      "Carbon monoxide": 1.0,
-      "Hydrogen": 3.0
+      "Adsorpt Hydrogen": 1.0,
+      "Adsorpt Carbon monoxide": 1.0
     },
     "speed": 10000,
-    "base_cost": 150,
-    "unlock_cost": 100,
+    "base_cost": 0,
+    "unlock_cost": 0,
     "progress": 0,
     "value": 0,
     "unlocked": false
   },
-  "Methanol dehydration": {
+  "Adsorbed Reaction II": {
     "level": 1,
     "products": {
-      "Dimethyl ether": 1.0,
-      "Water": 1.0
+      "Adsorpt Dihydrocarbonmonoxide": 1.0,
+      "Paladium": 1.0
     },
     "educts": {
-      "Methanol": 2.0
+      "Adsorpt Hydrogen": 1.0,
+      "Adsorpt Hydrocarbonmonoxide": 1.0
     },
     "speed": 10000,
-    "base_cost": 300,
-    "unlock_cost": 200,
+    "base_cost": 0,
+    "unlock_cost": 0,
     "progress": 0,
     "value": 0,
     "unlocked": false
   },
-  "Dimethyl ether Cracking": {
+  "Adsorbed Reaction III": {
     "level": 1,
     "products": {
-      "Carbon": 2.0,
-      "Ethylene": 4.0,
-      "Propylen": 4.0,
-      "Water": 12.0,
-      "Hydrogen": 2.0
+      "Adsorpt Trihydrocarbonmonoxide": 1.0,
+      "Paladium": 1.0
     },
     "educts": {
-      "Dimethyl ether": 11.0,
-      "Water": 1.0
+      "Adsorpt Hydrogen": 1.0,
+      "Adsorpt Dihydrocarbonmonoxide": 1.0
     },
     "speed": 10000,
-    "base_cost": 500.0,
-    "unlock_cost": 300.0,
+    "base_cost": 0,
+    "unlock_cost": 0,
+    "progress": 0,
+    "value": 0,
+    "unlocked": false
+  },
+  "Adsorbed Reaction IV": {
+    "level": 1,
+    "products": {
+      "Adsorpt Methanol": 1.0,
+      "Paladium": 1.0
+    },
+    "educts": {
+      "Adsorpt Hydrogen": 1.0,
+      "Adsorpt Trihydrocarbonmonoxide": 1.0
+    },
+    "speed": 10000,
+    "base_cost": 0,
+    "unlock_cost": 0,
+    "progress": 0,
+    "value": 0,
+    "unlocked": false
+  },
+  "Desorption": {
+    "level": 1,
+    "products": {
+      "Methanol": 1.0,
+      "Paladium": 1.0
+    },
+    "educts": {
+      "Adsorpt Methanol": 1.0
+    },
+    "speed": 10000,
+    "base_cost": 0,
+    "unlock_cost": 0,
     "progress": 0,
     "value": 0,
     "unlocked": false

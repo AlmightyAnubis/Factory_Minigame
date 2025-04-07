@@ -1,0 +1,153 @@
+{
+  "Methane Adsorption": {
+    "level": 1,
+    "products": {
+      "Adsorpt Methane": 1.0
+    },
+    "educts": {
+      "Methane": 1.0,
+      "Paladium": 1.0
+    },
+    "speed": 10000,
+    "base_cost": 0,
+    "unlock_cost": 0,
+    "progress": 0,
+    "value": 0,
+    "unlocked": true
+  },
+  "Oxygen Adsorption": {
+    "level": 1,
+    "products": {
+      "Adsorpt Oxygen": 2.0
+    },
+    "educts": {
+      "Oxygen": 1.0,
+      "Paladium": 2.0
+    },
+    "speed": 10000,
+    "base_cost": 0,
+    "unlock_cost": 0,
+    "progress": 0,
+    "value": 0,
+    "unlocked": true
+  },
+  "Meth-Ox I": {
+    "level": 1,
+    "products": {
+      "Adsorpt CH3": 1.0,
+      "Adsorpt Hydroxyl": 1.0
+    },
+    "educts": {
+      "Adsorpt Methane": 1.0,
+      "Adsorpt Oxygen": 1.0
+    },
+    "speed": 10000,
+    "base_cost": 0,
+    "unlock_cost": 0,
+    "progress": 0,
+    "value": 0,
+    "unlocked": true
+  },
+  "Hydroxyl Oxidation": {
+    "level": 1,
+    "products": {
+      "Water": 1.0,
+      "Paladium": 2.0
+    },
+    "educts": {
+      "Adsorpt Hydroxyl": 1.0,
+      "Adsorpt Oxygen": 1.0
+    },
+    "speed": 10000,
+    "base_cost": 0,
+    "unlock_cost": 0,
+    "progress": 0,
+    "value": 0,
+    "unlocked": true
+  },
+  "Meth-Ox II": {
+    "level": 1,
+    "products": {
+      "Adsorpt Hydroxyl": 1.0,
+      "Adsorpt CH2": 1.0
+    },
+    "educts": {
+      "Adsorpt CH3": 1.0,
+      "Adsorpt Oxygen": 1.0
+    },
+    "speed": 10000,
+    "base_cost": 0,
+    "unlock_cost": 0,
+    "progress": 0,
+    "value": 0,
+    "unlocked": true
+  },
+  "Meth-Ox III": {
+    "level": 1,
+    "products": {
+      "Adsorpt Hydroxyl": 1.0,
+      "Adsorpt CH": 1.0
+    },
+    "educts": {
+      "Adsorpt CH2": 1.0,
+      "Adsorpt Oxygen": 1.0
+    },
+    "speed": 10000,
+    "base_cost": 0,
+    "unlock_cost": 0,
+    "progress": 0,
+    "value": 0,
+    "unlocked": true
+  },
+  "Meth-Ox IV": {
+    "level": 1,
+    "products": {
+      "Adsorpt Carbon": 1.0,
+      "Adsorpt Hydroxyl": 1.0
+    },
+    "educts": {
+      "Adsorpt CH": 1.0,
+      "Adsorpt Oxygen": 1.0
+    },
+    "speed": 10000,
+    "base_cost": 0,
+    "unlock_cost": 0,
+    "progress": 0,
+    "value": 0,
+    "unlocked": true
+  },
+  "Carbon Ox I": {
+    "level": 1,
+    "products": {
+      "Adsorpt Carbon monoxide": 1.0,
+      "Paladium": 1.0
+    },
+    "educts": {
+      "Adsorpt Carbon": 1.0,
+      "Adsorpt Oxygen": 1.0
+    },
+    "speed": 10000,
+    "base_cost": 0,
+    "unlock_cost": 0,
+    "progress": 0,
+    "value": 0,
+    "unlocked": true
+  },
+  "Carbon Ox II": {
+    "level": 1,
+    "products": {
+      "Paladium": 2.0,
+      "Carbon dioxide": 1.0
+    },
+    "educts": {
+      "Adsorpt Carbon monoxide": 1.0,
+      "Adsorpt Oxygen": 1.0
+    },
+    "speed": 10000,
+    "base_cost": 0,
+    "unlock_cost": 0,
+    "progress": 0,
+    "value": 0,
+    "unlocked": true
+  }
+}
